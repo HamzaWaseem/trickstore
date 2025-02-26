@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Customer Sign-Up</title>
+
+
+
+
+    <style media="screen">
+      body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    /* background: linear-gradient(to right, #b92b27, #1565c0) */
+}
+
+.container2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 2rem;
+    background-color: #f4f6f9;
+  }
+  
+  /* Row and Column */
+  .row2 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .col-md-6 {
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  /* Card Styling */
+  .card2 {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form and Input Styling */
+  .box2 h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-control2 {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  input[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 576px) {
+    .container2 {
+      padding: 1rem;
+    }
+  
+    .card2 {
+      padding: 1.5rem;
+    }
+  }
+    </style>
+  </head>
+  <body>
+    {% include "ecom/navbar.html" %}
+    <br><br><br><br>
+    {% include "ecom/backarrow.html" %}
+<div class="container2">
+  <div class="row2">
+    <div class="col-md-6">
+      <div class="card2">
+        <form class="box2" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <h1>Customer Sign Up</h1>
+          {% render_field userForm.first_name class="form-control2" placeholder="First Name" %}
+          {% render_field userForm.last_name class="form-control2" placeholder="Last Name" %}
+          {% render_field userForm.username class="form-control2" placeholder="Username" %}
+          {% render_field userForm.password class="form-control2" placeholder="Password" %}
+          {% render_field customerForm.address class="form-control2" placeholder="Address" %}
+          {% render_field customerForm.mobile class="form-control2" placeholder="Contact" %}
+          {% render_field customerForm.profile_pic class="form-control2" placeholder="Profile pic" %}
+          <input type="submit" value="Create">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% include "ecom/footer.html" %}
+  </body>
+</html>
