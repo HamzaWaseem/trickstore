@@ -1,22 +1,32 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
+    <title>Contact Us - Trick Storee</title>
     <style>
       body {
         font-family: Arial, sans-serif;
         line-height: 1.6;
         margin: 0;
         padding: 0;
-        background-color: #000;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("{% static 'images/background1.jpg' %}");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
         color: #fff;
+        padding-top: 60px;
       }
       .container {
         max-width: 800px;
-        margin: 0 auto;
+        margin: 20px auto;
         padding: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
       }
       h1, h2 {
         color: #fff;
@@ -28,10 +38,11 @@
       h2 {
         font-size: 1.2em;
         margin-top: 20px;
-        color: #ccc;
+        color: #f0f0f0;
       }
       p, ul {
         margin-bottom: 15px;
+        color: #f0f0f0;
       }
       ul {
         list-style-type: none;
@@ -40,24 +51,44 @@
       ul li {
         padding-left: 20px;
         position: relative;
-        text-decoration: none;
-      }
-      ul li:before {
-        content: "";
-        position: absolute;
-        left: 0;
-        color: #fff;
       }
       a {
-        color: lightblue;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+      a:hover {
+        color: #ccc;
+      }
+      .contact-method {
+        margin-bottom: 30px;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+      }
+      .contact-method:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+      
+      /* Navbar styling */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
       }
     </style>
 </head>
 <body>
-  {% include "ecom/backarrow.html" %}
-<div class="container">
+  {% include "ecom/customer_navbar.html" %}
+  <br><br>
+  <div class="container">
     <h1>Contact Us</h1>
-    <p class="contact-info">We’re here to help! If you have any questions, concerns, or need assistance with your order, please feel free to reach out to us through any of the following methods:</p>
+    <p class="contact-info">We're here to help! If you have any questions, concerns, or need assistance with your order, please feel free to reach out to us through any of the following methods:</p>
 
     <!-- Phone Support -->
     <div class="contact-method">
@@ -99,6 +130,7 @@
     </div>
 
     <p class="contact-info">We look forward to assisting you!</p>
-</div>
+  </div>
+  {% include "ecom/footer.html" %}
 </body>
 </html>
