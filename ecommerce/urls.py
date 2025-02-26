@@ -82,13 +82,4 @@ urlpatterns = [
     path('all-products/', views.all_products_view, name='all_products'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('products/<int:product_id>/<int:sub_category_id>/', views.product_detail, name='product_detail'),
-
-
-
-
-
-
-
-]
-if settings.DEBUG:  # Serve media files only during development
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
