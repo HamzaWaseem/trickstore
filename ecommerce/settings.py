@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'ecom',
     'widget_tweaks',
     'allauth',
@@ -56,11 +57,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'ckeditor',
     'ckeditor_uploader',
-
-
-
-
-
 ]
 
 MIDDLEWARE = [
@@ -71,13 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "allauth.account.middleware.AccountMiddleware",
     'django.middleware.gzip.GZipMiddleware',
-
-
-
-
-
 ]
 
 
@@ -96,7 +86,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
                 'ecom.context_processors.categories_context',
-
             ],
         },
     },
@@ -204,3 +193,5 @@ CKEDITOR_CONFIGS = {
 
 # Update Django version requirement
 DJANGO_VERSION = django.get_version()
+
+SITE_ID = 1
