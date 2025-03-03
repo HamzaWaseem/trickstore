@@ -15,6 +15,14 @@ from .forms import CustomerLoginForm
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import AuthenticationForm
 import json
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import (
+    ProductSerializer, 
+    CategorySerializer,
+    HeroSectionSerializer
+)
 
 
 
@@ -330,7 +338,7 @@ def search_view(request):
     # word variable will be shown in html when user click on search button
     word="Here You Go! :"
 
-    if request.user.is_authenticated:
+    if request.user.is_valid():
         return render(request,'ecom/customer_home.html',{'products':products,'word':word,'product_count_in_cart':product_count_in_cart})
     return render(request,'ecom/index.html',{'products':products,'word':word,'product_count_in_cart':product_count_in_cart})
 
@@ -1042,3 +1050,40 @@ def send_order_confirmation_email(order):
         [to],
         html_message=html_message
     )
+
+# Add these API views
+@api_view(['GET'])
+def api_home_data(request):
+    """API endpoint to get all data needed for the home page"""
+    try:
+        products = Product.objects.all().order_by('priority')
+        exclusive_product = Product.objects.filter(exclusive=True).first()
+        popular_products = Product.objects.filter(popular=True).order_by('popular_priority')
+        featured_products = Product.objects.filter(featured=True).order_by('feautered_priority')
+        featured_categories = Category.objects.filter(featured=True)
+        hero_section = HeroSection.objects.first()
+
+        data = {
+            'products': ProductSerializer(products, many=True).data,
+            'exclusive_product': ProductSerializer(exclusive_product).data if exclusive_product else None,
+            'popular_products': ProductSerializer(popular_products, many=True).data,
+            'featured_products': ProductSerializer(featured_products, many=True).data,
+            'featured_categories': CategorySerializer(featured_categories, many=True).data,
+            'hero_section': HeroSectionSerializer(hero_section).data if hero_section else None,
+        }
+        return Response(data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def api_cart_count(request):
+    """API endpoint to get cart count"""
+    try:
+        if 'cart' in request.COOKIES:
+            cart = json.loads(request.COOKIES['cart'])
+            count = sum(item['quantity'] for item in cart.values())
+        else:
+            count = 0
+        return Response({'count': count})
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
