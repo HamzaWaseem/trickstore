@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,reverse,get_object_or_404
 from . import forms,models
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from django.core.mail import send_mail
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required,user_passes_test
@@ -23,6 +23,7 @@ from .serializers import (
     CategorySerializer,
     HeroSectionSerializer
 )
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -1087,3 +1088,58 @@ def api_cart_count(request):
         return Response({'count': count})
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@csrf_exempt
+def admin_login(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            
+            user = authenticate(username=username, password=password)
+            
+            if user is not None and user.is_staff:
+                login(request, user)  # Create session for the user
+                return JsonResponse({
+                    'is_admin': True,
+                    'message': 'Login successful'
+                })
+            return JsonResponse({
+                'is_admin': False,
+                'message': 'Invalid credentials or insufficient permissions'
+            }, status=401)
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'error': 'Invalid JSON data'
+            }, status=400)
+        except Exception as e:
+            return JsonResponse({
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'error': 'Method not allowed'
+    }, status=405)
+
+def is_admin(user):
+    return user.is_staff
+
+@login_required
+@user_passes_test(is_admin)
+def admin_products(request):
+    products = Product.objects.all().values(
+        'id', 'name', 'price', 'stock', 'category__name'
+    )
+    products_list = list(products)
+    for product in products_list:
+        product['category'] = product.pop('category__name')
+    return JsonResponse(products_list, safe=False)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_categories(request):
+    categories = Category.objects.all().values(
+        'id', 'name', 'slug', 'featured'
+    )
+    return JsonResponse(list(categories), safe=False)

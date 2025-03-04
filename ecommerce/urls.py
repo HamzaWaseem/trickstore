@@ -15,7 +15,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.home_view,name=''),
+    path('', include('ecom.urls')),  # Include ecom URLs
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
     path('logout', LogoutView.as_view(template_name='ecom/logout.html'), name='logout'),
     path('aboutus', views.aboutus_view),
