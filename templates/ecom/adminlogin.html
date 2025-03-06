@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Scrollable Page</title>
+
+    {% load widget_tweaks %}
+    
+ 
+    
+</head>
+<body>
+  <style>
+    /* General page styling */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body, html {
+        font-family: Arial, sans-serif;
+        color: #333;
+        min-height: 100vh;
+        display: block;
+    }
+    
+    /* Main content container */
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: #f8f9fa;
+        min-height: 80vh;
+    }
+    
+    .box1 {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .box1 h2 {
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        color: #333;
+    }
+    
+    .box1 input[type="text"],
+    .box1 input[type="password"],
+    .box1 input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        font-size: 1rem;
+    }
+    
+    .box1 input[type="submit"] {
+        background: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+    
+    .box1 input[type="submit"]:hover {
+        background: #45a049;
+    }
+    
+    /* Footer styling */
+    
+    
+</style>
+
+  {% include "ecom/navbar.html" %}
+
+    <!-- Main content container -->
+    <div class="container">
+        <div class="box1">
+            <h2>Admin Login</h2>
+            <form action="" method="post">
+                {% csrf_token %}
+                {% render_field form.username class="form-control" placeholder="Username" autocomplete="off" %}
+                     {% render_field form.password class="form-control" placeholder="Password" %}
+                     <input type="submit" name="" value="Login">
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include "ecom/footer.html" %}
+</body>
+</html>

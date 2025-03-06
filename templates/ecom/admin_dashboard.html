@@ -1,0 +1,58 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<br>
+{%include 'ecom/admin_dashboard_cards.html'%}
+<br><br><br><br><br>
+
+<hr><hr>
+<div class="container" >
+
+    <div class="panel panel-danger" >
+      <div class="panel-heading" style="text-align:center;">
+        <h6 class="panel-title">Recent Booking</h6>
+      </div>
+      <table class="table table-hover table-bordered" id="dev-table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Shipment Address</th>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Status</th>
+
+          </tr>
+        </thead>
+        {% for products, customer, order in data %}
+<tr>
+    <td>{{ customer.get_name }}</td>
+    <td>{{ customer.mobile }}</td>
+    <td>{{ order.address }}</td>
+    <td>
+        {% for product in products %}
+        {{ product.name }}<br>
+        {% endfor %}
+    </td>
+    <td>
+        {% for product in products %}
+        <img src="{% static product.product_image.url %}" alt="{{ product.name }}" style="width: 50px; height: 50px;"><br>
+        {% endfor %}
+    </td>
+    <td>{{ order.status }}</td>
+</tr>
+{% endfor %}
+
+
+
+
+
+
+
+      </table>
+
+  </div>
+</div>
+
+
+{% endblock content %}

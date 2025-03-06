@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Trick Storee</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("{% static 'images/background1.jpg' %}");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        color: #fff;
+        padding-top: 60px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      }
+      h1, h2 {
+        color: #fff;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      h2 {
+        font-size: 1.2em;
+        margin-top: 20px;
+        color: #f0f0f0;
+      }
+      p, ul {
+        margin-bottom: 15px;
+        color: #f0f0f0;
+      }
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+      ul li {
+        padding-left: 20px;
+        position: relative;
+      }
+      a {
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+      a:hover {
+        color: #ccc;
+      }
+      .contact-method {
+        margin-bottom: 30px;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+      }
+      .contact-method:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+      
+      /* Navbar styling */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+      }
+    </style>
+</head>
+<body>
+  {% include "ecom/customer_navbar.html" %}
+  <br><br>
+  <div class="container">
+    <h1>Contact Us</h1>
+    <p class="contact-info">We're here to help! If you have any questions, concerns, or need assistance with your order, please feel free to reach out to us through any of the following methods:</p>
+
+    <!-- Phone Support -->
+    <div class="contact-method">
+        <h2>Phone Support</h2>
+        <p class="contact-info">Call us at +92 335 6333396 for immediate assistance during our business hours.</p>
+    </div>
+
+    <!-- Email Support -->
+    <div class="contact-method">
+        <h2>Email Support</h2>
+        <p class="contact-info">
+            For general business inquiries, please email us at <a href="mailto:business@trickstoree.com">business@trickstoree.com</a>.<br>
+            For support-related questions, contact us at <a href="mailto:support@trickstoree.com">support@trickstoree.com</a>.
+        </p>
+    </div>
+
+   
+
+    <!-- Instagram -->
+    <div class="contact-method">
+        <h2>Social Support</h2>
+        <p class="contact-info">Follow and message us on Instagram: <a href="https://instagram.com/trick._.storee" target="_blank">@trick._.storee</a>.</p>
+        <p class="contact-info">Follow and message us on Facebook: <a href="https://www.facebook.com/p/trick-storee-61565180496097/" target="_blank">Trick Storee</a>.</p>
+    </div>
+
+     <!-- WhatsApp Support -->
+     <div class="contact-method">
+      <h2>WhatsApp Support</h2>
+      <p class="contact-info">You can also reach us via WhatsApp at +92 335 6333396 for quick responses.</p>
+  </div>
+
+    <!-- Visit Us -->
+    <div class="contact-method">
+        <h2>Visit Us</h2>
+        <p class="contact-info">
+            Our local office is located at:<br>
+            873B Khanewal Road, Opposite WAPDA MEPCO Offices, Multan
+        </p>
+    </div>
+
+    <p class="contact-info">We look forward to assisting you!</p>
+  </div>
+  {% include "ecom/footer.html" %}
+</body>
+</html>
