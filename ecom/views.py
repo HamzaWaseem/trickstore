@@ -15,7 +15,7 @@ from .forms import CustomerLoginForm
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import AuthenticationForm
 import json
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import (
@@ -24,6 +24,9 @@ from .serializers import (
     HeroSectionSerializer
 )
 from django.views.decorators.csrf import csrf_exempt
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 
 
@@ -1053,9 +1056,73 @@ def send_order_confirmation_email(order):
     )
 
 # Add these API views
+@swagger_auto_schema(
+    method='get',
+    operation_description="Get all data needed for the home page",
+    responses={
+        200: openapi.Response(
+            description="Success",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'products': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            ref="#/components/schemas/Product"
+                        )
+                    ),
+                    'exclusive_product': openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        ref="#/components/schemas/Product",
+                        nullable=True
+                    ),
+                    'popular_products': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            ref="#/components/schemas/Product"
+                        )
+                    ),
+                    'featured_products': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            ref="#/components/schemas/Product"
+                        )
+                    ),
+                    'featured_categories': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            ref="#/components/schemas/Category"
+                        )
+                    ),
+                    'hero_section': openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        ref="#/components/schemas/HeroSection",
+                        nullable=True
+                    ),
+                }
+            )
+        ),
+        500: openapi.Response(
+            description="Internal Server Error",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING)
+                }
+            )
+        )
+    }
+)
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def api_home_data(request):
-    """API endpoint to get all data needed for the home page"""
+    """
+    Get all data needed for the home page including products, categories, and hero section.
+    """
     try:
         products = Product.objects.all().order_by('priority')
         exclusive_product = Product.objects.filter(exclusive=True).first()
@@ -1076,9 +1143,36 @@ def api_home_data(request):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@swagger_auto_schema(
+    method='get',
+    operation_description="Get current cart count from cookies",
+    responses={
+        200: openapi.Response(
+            description="Success",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'count': openapi.Schema(type=openapi.TYPE_INTEGER)
+                }
+            )
+        ),
+        500: openapi.Response(
+            description="Internal Server Error",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING)
+                }
+            )
+        )
+    }
+)
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def api_cart_count(request):
-    """API endpoint to get cart count"""
+    """
+    Get the current number of items in the cart from cookies.
+    """
     try:
         if 'cart' in request.COOKIES:
             cart = json.loads(request.COOKIES['cart'])
@@ -1089,8 +1183,48 @@ def api_cart_count(request):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@swagger_auto_schema(
+    method='post',
+    operation_description="Admin login endpoint",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['username', 'password'],
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING),
+            'password': openapi.Schema(type=openapi.TYPE_STRING, format='password')
+        }
+    ),
+    responses={
+        200: openapi.Response(
+            description="Login successful",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'is_admin': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                    'message': openapi.Schema(type=openapi.TYPE_STRING)
+                }
+            )
+        ),
+        401: openapi.Response(
+            description="Invalid credentials",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'is_admin': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                    'message': openapi.Schema(type=openapi.TYPE_STRING)
+                }
+            )
+        ),
+        400: openapi.Response(description="Invalid JSON data"),
+        405: openapi.Response(description="Method not allowed")
+    }
+)
+@api_view(['POST'])
 @csrf_exempt
 def admin_login(request):
+    """
+    Admin login endpoint that authenticates admin users and creates a session.
+    """
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -1125,9 +1259,37 @@ def admin_login(request):
 def is_admin(user):
     return user.is_staff
 
+@swagger_auto_schema(
+    method='get',
+    operation_description="Get all products for admin",
+    responses={
+        200: openapi.Response(
+            description="Success",
+            schema=openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        'name': openapi.Schema(type=openapi.TYPE_STRING),
+                        'price': openapi.Schema(type=openapi.TYPE_NUMBER),
+                        'stock': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        'category': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            )
+        )
+    },
+    security=[{'Bearer': []}]
+)
+@api_view(['GET'])
 @login_required
 @user_passes_test(is_admin)
 def admin_products(request):
+    """
+    Get all products with their details for admin dashboard.
+    Requires admin authentication.
+    """
     products = Product.objects.all().values(
         'id', 'name', 'price', 'stock', 'category__name'
     )
@@ -1136,9 +1298,36 @@ def admin_products(request):
         product['category'] = product.pop('category__name')
     return JsonResponse(products_list, safe=False)
 
+@swagger_auto_schema(
+    method='get',
+    operation_description="Get all categories for admin",
+    responses={
+        200: openapi.Response(
+            description="Success",
+            schema=openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        'name': openapi.Schema(type=openapi.TYPE_STRING),
+                        'slug': openapi.Schema(type=openapi.TYPE_STRING),
+                        'featured': openapi.Schema(type=openapi.TYPE_BOOLEAN)
+                    }
+                )
+            )
+        )
+    },
+    security=[{'Bearer': []}]
+)
+@api_view(['GET'])
 @login_required
 @user_passes_test(is_admin)
 def admin_categories(request):
+    """
+    Get all categories with their details for admin dashboard.
+    Requires admin authentication.
+    """
     categories = Category.objects.all().values(
         'id', 'name', 'slug', 'featured'
     )
